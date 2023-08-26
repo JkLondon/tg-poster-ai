@@ -2,6 +2,7 @@ package openai
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"os"
 
@@ -17,10 +18,10 @@ func NewOpenAIClient(token string) *OpenAI {
 	return &OpenAI{client: client}
 }
 
-func (o *OpenAI) CreateNews(town string) (result string, err error) {
+func (o *OpenAI) CreateNews(ctx context.Context, town string) (result string, image []byte, err error) {
 	println(os.Getenv("CHATPROMPT"))
 	resp, err := o.client.CreateChatCompletion(
-		context.Background(),
+		ctx,
 		openaiApi.ChatCompletionRequest{
 			Model: openaiApi.GPT3Dot5Turbo,
 			Messages: []openaiApi.ChatCompletionMessage{
@@ -33,8 +34,27 @@ func (o *OpenAI) CreateNews(town string) (result string, err error) {
 	)
 	if err != nil {
 		fmt.Printf("ChatCompletion error: %v\n", err)
-		return result, err
+		return result, nil, err
 	}
 
-	return resp.Choices[0].Message.Content, nil
+	reqBase64 := openaiApi.ImageRequest{
+		Prompt:         os.Getenv("CHATPROMPT"),
+		Size:           openaiApi.CreateImageSize256x256,
+		ResponseFormat: openaiApi.CreateImageResponseFormatB64JSON,
+		N:              1,
+	}
+
+	respBase64, err := o.client.CreateImage(ctx, reqBase64)
+	if err != nil {
+		fmt.Printf("Image creation error: %v\n", err)
+		return
+	}
+
+	imgBytes, err := base64.StdEncoding.DecodeString(respBase64.Data[0].B64JSON)
+	if err != nil {
+		fmt.Printf("Base64 decode error: %v\n", err)
+		return
+	}
+
+	return resp.Choices[0].Message.Content, imgBytes, nil
 }
