@@ -38,7 +38,7 @@ func (o *OpenAI) CreateNews(ctx context.Context, town string) (result string, im
 	}
 
 	reqBase64 := openaiApi.ImageRequest{
-		Prompt:         os.Getenv("CHATPROMPT"),
+		Prompt:         "бабушка с советским флагом в руках под украиной",
 		Size:           openaiApi.CreateImageSize256x256,
 		ResponseFormat: openaiApi.CreateImageResponseFormatB64JSON,
 		N:              1,
