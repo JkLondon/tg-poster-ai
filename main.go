@@ -26,6 +26,6 @@ func main() {
 		log.Fatalf("parse chat id")
 	}
 	tgBot := tg.NewTgBot(os.Getenv("TGTOKEN"), int64(chatID))
-	worker := sheduler.NewWorker(openAICLient, tgBot, 3*time.Hour)
+	worker := sheduler.NewWorker(openAICLient, tgBot, 1*time.Hour)
 	worker.Work()
 }
