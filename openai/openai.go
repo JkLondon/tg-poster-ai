@@ -2,7 +2,6 @@ package openai
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"os"
 
@@ -37,24 +36,24 @@ func (o *OpenAI) CreateNews(ctx context.Context, town string) (result string, im
 		return result, nil, err
 	}
 
-	reqBase64 := openaiApi.ImageRequest{
-		Prompt:         "бабушка с советским флагом в руках под украиной",
-		Size:           openaiApi.CreateImageSize256x256,
-		ResponseFormat: openaiApi.CreateImageResponseFormatB64JSON,
-		N:              1,
-	}
+	//reqBase64 := openaiApi.ImageRequest{
+	//	Prompt:         "бабушка с советским флагом в руках под украиной",
+	//	Size:           openaiApi.CreateImageSize256x256,
+	//	ResponseFormat: openaiApi.CreateImageResponseFormatB64JSON,
+	//	N:              1,
+	//}
+	//
+	//respBase64, err := o.client.CreateImage(ctx, reqBase64)
+	//if err != nil {
+	//	fmt.Printf("Image creation error: %v\n", err)
+	//	return
+	//}
+	//
+	//imgBytes, err := base64.StdEncoding.DecodeString(respBase64.Data[0].B64JSON)
+	//if err != nil {
+	//	fmt.Printf("Base64 decode error: %v\n", err)
+	//	return
+	//}
 
-	respBase64, err := o.client.CreateImage(ctx, reqBase64)
-	if err != nil {
-		fmt.Printf("Image creation error: %v\n", err)
-		return
-	}
-
-	imgBytes, err := base64.StdEncoding.DecodeString(respBase64.Data[0].B64JSON)
-	if err != nil {
-		fmt.Printf("Base64 decode error: %v\n", err)
-		return
-	}
-
-	return resp.Choices[0].Message.Content, imgBytes, nil
+	return resp.Choices[0].Message.Content, nil, nil
 }
