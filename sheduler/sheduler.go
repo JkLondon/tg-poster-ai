@@ -1,6 +1,7 @@
 package sheduler
 
 import (
+	"context"
 	"cum-ai/openai"
 	"cum-ai/tg"
 	"math/rand"
@@ -19,13 +20,13 @@ func NewWorker(openaiApi *openai.OpenAI, tgBot *tg.TgBot, timeDelta time.Duratio
 
 func (w *Worker) Post(text string) {
 	println("start gen")
-	news, err := w.openaiApi.CreateNews(text)
+	news, img, err := w.openaiApi.CreateNews(context.Background(), text)
 	if err != nil {
 		println("openaiApi", err.Error())
 		return
 	}
 	println(news)
-	err = w.tgBot.PostShitAboutTown(news)
+	err = w.tgBot.PostShitAboutTown(news, img)
 	if err != nil {
 		println("tgBot", err.Error())
 		return
